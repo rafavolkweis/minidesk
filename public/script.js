@@ -11,7 +11,6 @@ function removerImagem(){ imagemBase64=null; fileInput.value=''; preview.innerHT
 
 fileInput?.addEventListener('change', (e)=>{
   const file = e.target.files[0]; if(!file) return;
-  if(file.size > 2*1024*1024){ alert('Imagem max 2MB'); return; }
   const r=new FileReader(); r.onload=ev=>mostrarPreview(ev.target.result); r.readAsDataURL(file);
 });
 document.addEventListener('paste', (e)=>{
@@ -25,6 +24,7 @@ dropZone?.addEventListener('drop', (e)=>{
   const file=e.dataTransfer.files[0];
   if(file && file.type.includes('image')){ const r=new FileReader(); r.onload=ev=>mostrarPreview(ev.target.result); r.readAsDataURL(file); }
 });
+
 async function criar(){
   const titulo=document.getElementById('titulo').value.trim();
   const descricao=document.getElementById('descricao').value.trim();
@@ -34,6 +34,14 @@ async function criar(){
   await fetch('/chamados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
   document.getElementById('titulo').value=''; document.getElementById('descricao').value=''; removerImagem(); carregar();
 }
+
+async function deletar(id){
+  if(!confirm('Marcar como resolvido e remover este chamado?')) return;
+  await fetch(`/chamados/${id}`, {method:'DELETE'}).catch(()=>{});
+  await fetch(`/api/tickets/${id}`, {method:'DELETE'}).catch(()=>{});
+  carregar();
+}
+
 async function carregar(){
   try{
     let res=await fetch('/chamados'); if(!res.ok) res=await fetch('/api/tickets');
@@ -41,7 +49,13 @@ async function carregar(){
     document.getElementById('count').innerText=tickets.length;
     document.getElementById('lista').innerHTML=tickets.map(t=>`
       <div class="ticket-item">
-        <div class="ticket-header"><span class="ticket-title">${(t.titulo||t.title||'').replace(/</g,'&lt;')}</span><span class="ticket-id">#${t.id}</span></div>
+        <div class="ticket-header">
+          <span class="ticket-title">${(t.titulo||t.title||'').replace(/</g,'&lt;')}</span>
+          <div style="display:flex; gap:6px; align-items:center">
+            <span class="ticket-id">#${t.id}</span>
+            <button class="x-ticket" onclick="deletar(${t.id})" title="Resolver / Remover">✕</button>
+          </div>
+        </div>
         <p class="ticket-desc">${(t.descricao||t.description||'').replace(/</g,'&lt;')}</p>
         ${t.image ? `<img src="${t.image}" class="ticket-img" onclick="window.open(this.src)">` : ''}
         <div class="ticket-footer">🕒 ${new Date(t.created_at||t.data||Date.now()).toLocaleString('pt-BR')}</div>
