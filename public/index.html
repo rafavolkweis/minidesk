@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MiniDesk</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header><div class="logo">🎫 MiniDesk</div><span>Sistema de chamados - Parte Final</span></header>
+<main>
+<div class="left">
+  <div class="card"><h2>Novo Chamado</h2>
+  <input id="titulo" placeholder="Título - Ex: Impressora não funciona">
+  <textarea id="descricao" placeholder="Descreva em detalhes..."></textarea>
+  <button onclick="criar()">Abrir Chamado 🚀</button>
+  </div>
+</div>
+<div class="right">
+  <div class="card"><h2>Chamados Abertos <span id="count">0</span></h2><div id="lista"></div></div>
+</div>
+</main>
+<script src="script.js"></script>
+</body>
+</html>
