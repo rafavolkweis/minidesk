@@ -12,15 +12,13 @@
   <div class="card"><h2>Novo Chamado</h2>
     <input id="titulo" placeholder="Titulo - Ex: Impressora não funciona">
     <textarea id="descricao" placeholder="Descreva em detalhes..."></textarea>
-    
-    <div style="margin-top:12px; border:1px dashed #333; border-radius:10px; padding:12px; background:#111">
-      <label style="font-size:13px; color:#aaa; display:block">📸 Anexar print / foto (opcional)</label>
-      <input type="file" id="fileInput" accept="image/*" style="margin-top:6px; width:100%; color:white">
+    <div class="upload-box">
+      <label>📸 Anexar print / foto (opcional)</label>
+      <input type="file" id="fileInput" accept="image/*">
       <div id="preview"></div>
-      <small style="color:#666; display:block; margin-top:6px">Dica: pode arrastar ou colar com CTRL+V</small>
+      <small>Dica: pode arrastar ou colar com CTRL+V</small>
     </div>
-
-    <button onclick="criar()" style="margin-top:12px">Abrir Chamado 🚀</button>
+    <button onclick="criar()">Abrir Chamado 🚀</button>
   </div>
 </div>
 <div class="right">
