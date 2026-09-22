@@ -3,63 +3,42 @@ const fileInput = document.getElementById('fileInput');
 const preview = document.getElementById('preview');
 const dropZone = document.getElementById('dropZone');
 
-function mostrarPreview(base64){
-  imagemBase64 = base64;
-  preview.innerHTML = `<div class="preview-wrap"><img src="${base64}"><button class="x-remove" onclick="removerImagem()" title="Remover">✕</button></div>`;
+function mostrarPreview(b64){
+  imagemBase64=b64;
+  preview.innerHTML=`<div class="preview-wrap"><img src="${b64}"><button class="x-remove" onclick="removerImagem()">✕</button></div>`;
 }
-function removerImagem(){ imagemBase64=null; fileInput.value=''; preview.innerHTML=''; }
+function removerImagem(){imagemBase64=null;fileInput.value='';preview.innerHTML='';}
 
-fileInput?.addEventListener('change', (e)=>{
-  const file = e.target.files[0]; if(!file) return;
-  const r=new FileReader(); r.onload=ev=>mostrarPreview(ev.target.result); r.readAsDataURL(file);
-});
-document.addEventListener('paste', (e)=>{
-  const item=[...(e.clipboardData?.items||[])].find(i=>i.type.includes('image'));
-  if(item){ const f=item.getAsFile(); const r=new FileReader(); r.onload=ev=>mostrarPreview(ev.target.result); r.readAsDataURL(f); }
-});
-dropZone?.addEventListener('dragover', (e)=>{ e.preventDefault(); dropZone.classList.add('dragover'); });
-dropZone?.addEventListener('dragleave', ()=> dropZone.classList.remove('dragover'));
-dropZone?.addEventListener('drop', (e)=>{
-  e.preventDefault(); dropZone.classList.remove('dragover');
-  const file=e.dataTransfer.files[0];
-  if(file && file.type.includes('image')){ const r=new FileReader(); r.onload=ev=>mostrarPreview(ev.target.result); r.readAsDataURL(file); }
+fileInput?.addEventListener('change',e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const r=new FileReader(); r.onload=ev=>mostrarPreview(ev.target.result); r.readAsDataURL(f);
 });
 
 async function criar(){
-  const titulo=document.getElementById('titulo').value.trim();
-  const descricao=document.getElementById('descricao').value.trim();
-  if(!titulo || !descricao){ alert('Preencha título e descrição!'); return; }
-  const payload={titulo, descricao, image: imagemBase64};
-  await fetch('/api/tickets',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
-  await fetch('/chamados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)}).catch(()=>{});
+  const t=document.getElementById('titulo').value.trim();
+  const d=document.getElementById('descricao').value.trim();
+  if(!t||!d){alert('Preencha título e descrição');return;}
+  await fetch('/chamados',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({titulo:t,descricao:d,image:imagemBase64})});
   document.getElementById('titulo').value=''; document.getElementById('descricao').value=''; removerImagem(); carregar();
 }
-
 async function deletar(id){
-  if(!confirm('Marcar como resolvido e remover este chamado?')) return;
-  await fetch(`/chamados/${id}`, {method:'DELETE'}).catch(()=>{});
-  await fetch(`/api/tickets/${id}`, {method:'DELETE'}).catch(()=>{});
-  carregar();
+  if(!confirm('Resolver e remover chamado #'+id+'?')) return;
+  await fetch('/chamados/'+id,{method:'DELETE'}); carregar();
 }
-
 async function carregar(){
   try{
-    let res=await fetch('/chamados'); if(!res.ok) res=await fetch('/api/tickets');
-    const tickets=await res.json();
+    const r=await fetch('/chamados'); const tickets=await r.json();
     document.getElementById('count').innerText=tickets.length;
-    document.getElementById('lista').innerHTML=tickets.map(t=>`
+    document.getElementById('lista').innerHTML=tickets.map(x=>`
       <div class="ticket-item">
         <div class="ticket-header">
-          <span class="ticket-title">${(t.titulo||t.title||'').replace(/</g,'&lt;')}</span>
-          <div style="display:flex; gap:6px; align-items:center">
-            <span class="ticket-id">#${t.id}</span>
-            <button class="x-ticket" onclick="deletar(${t.id})" title="Resolver / Remover">✕</button>
-          </div>
+          <span class="ticket-title">${(x.titulo||'').replace(/</g,'&lt;')}</span>
+          <div style="display:flex;gap:6px;align-items:center"><span class="ticket-id">#${x.id}</span><button class="x-ticket" onclick="deletar(${x.id})">✕</button></div>
         </div>
-        <p class="ticket-desc">${(t.descricao||t.description||'').replace(/</g,'&lt;')}</p>
-        ${t.image ? `<img src="${t.image}" class="ticket-img" onclick="window.open(this.src)">` : ''}
-        <div class="ticket-footer">🕒 ${new Date(t.created_at||t.data||Date.now()).toLocaleString('pt-BR')}</div>
-      </div>`).join('') || '<p class="empty">Nenhum chamado ainda. Crie o primeiro! 👆</p>';
+        <p class="ticket-desc">${(x.descricao||'').replace(/</g,'&lt;')}</p>
+        ${x.image?`<img src="${x.image}" class="ticket-img" onclick="window.open(this.src)">`:''}
+        <div class="ticket-footer">${new Date(x.created_at).toLocaleString('pt-BR')}</div>
+      </div>`).join('') || '<p class="empty">Nenhum chamado</p>';
   }catch(e){ document.getElementById('lista').innerHTML='<p class="empty">Erro ao carregar</p>'; }
 }
 carregar();

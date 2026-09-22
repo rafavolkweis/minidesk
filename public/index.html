@@ -3,15 +3,47 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MiniDesk - Sistema de Chamados</title>
-<link rel="stylesheet" href="style.css">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Segoe UI,sans-serif}
+body{background:#0a0a0f;color:#fff;min-height:100vh}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid #1e1e2a;background:#0f0f14;position:sticky;top:0;z-index:10}
+.brand{display:flex;align-items:center;gap:12px}
+.logo-icon{width:38px;height:38px;border-radius:10px;background:linear-gradient(135deg,#6c5cff,#8b5cf6);display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:22px;height:22px}
+.brand-text{display:flex;flex-direction:column;line-height:1.1}
+.brand-text strong{font-size:17px;font-weight:800}
+.brand-text span{font-size:12px;color:#777;margin-top:2px}
+.header-badge{font-size:10px;background:#1e1e28;border:1px solid #2a2a3a;padding:4px 10px;border-radius:20px;color:#8b8bb5}
+main{display:grid;grid-template-columns:380px 1fr;gap:20px;padding:22px;max-width:1250px;margin:0 auto}
+.card{background:#14141f;border:1px solid #23232f;border-radius:16px;padding:18px}
+.card h2{font-size:14.5px;margin-bottom:14px;display:flex;justify-content:space-between;align-items:center}
+#count{background:#6c5cff;color:#fff;font-size:11px;padding:3px 10px;border-radius:20px}
+input,textarea{width:100%;background:#0e0e15;border:1px solid #26263a;color:#fff;border-radius:10px;padding:12px 13px;font-size:13.5px;outline:none;margin-bottom:10px}
+textarea{min-height:95px;resize:vertical}
+input:focus,textarea:focus{border-color:#6c5cff}
+.upload-box{border:1.5px dashed #2a2a3e;border-radius:12px;padding:14px;background:#0e0e15;margin-bottom:12px;text-align:center}
+.btn-upload{background:#1e1e2e;border:1px solid #2e2e44;color:#a1a1b5;padding:7px 14px;border-radius:8px;font-size:12px;cursor:pointer}
+.btn-primary{width:100%;background:#6c5cff;color:#fff;border:0;border-radius:10px;padding:12px;font-weight:700;font-size:14px;cursor:pointer}
+.ticket-item{background:#0f0f16;border:1px solid #23232f;border-radius:12px;padding:14px 16px;margin-bottom:12px}
+.ticket-header{display:flex;justify-content:space-between;gap:12px;margin-bottom:8px}
+.ticket-title{font-weight:700;font-size:14.5px;flex:1}
+.ticket-id{font-size:11px;color:#888;background:#1c1c2a;padding:4px 9px;border-radius:20px;border:1px solid #2a2a3e}
+.ticket-desc{color:#a1a1b5;font-size:13px;line-height:1.6;margin-bottom:8px;white-space:pre-wrap;word-break:break-word}
+.ticket-img{max-width:100%;border-radius:8px;margin-bottom:8px;display:block;cursor:zoom-in}
+.ticket-footer{font-size:11px;color:#5a5a72}
+.preview-wrap{position:relative;display:inline-block;margin-top:10px}
+.preview-wrap img{max-width:100%;border-radius:8px;border:1px solid #2a2a3a}
+.x-remove{position:absolute;top:-8px;right:-8px;width:26px;height:26px;border-radius:50%;background:#ff3b5c;color:#fff;border:2px solid #14141f;font-weight:800;font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.x-ticket{width:24px;height:24px;border-radius:50%;background:#1e1e2a;color:#fff;border:1px solid #2a2a3a;cursor:pointer;font-weight:800}
+.x-ticket:hover{background:#ff3b5c}
+.empty{color:#555;text-align:center;padding:20px;font-size:13px}
+@media(max-width:850px){main{grid-template-columns:1fr}}
+</style>
 </head>
 <body>
 <header>
   <div class="brand">
-    <div class="logo-icon">
-      <svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/></svg>
-    </div>
+    <div class="logo-icon"><svg viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M9 11l3 3L22 4"/></svg></div>
     <div class="brand-text"><strong>MiniDesk</strong><span>Sistema de chamados - Parte Final</span></div>
   </div>
   <div class="header-badge">v2.0 PRO</div>
@@ -21,13 +53,12 @@
     <div class="card">
       <h2>📝 Novo Chamado</h2>
       <input id="titulo" placeholder="Título - Ex: Impressora não funciona">
-      <textarea id="descricao" placeholder="Descreva em detalhes o que aconteceu..."></textarea>
+      <textarea id="descricao" placeholder="Descreva em detalhes..."></textarea>
       <div class="upload-box" id="dropZone">
         <label>📸 Anexar print / foto (opcional)</label>
         <input type="file" id="fileInput" accept="image/*" hidden>
         <button type="button" class="btn-upload" onclick="document.getElementById('fileInput').click()">Escolher imagem</button>
         <div id="preview"></div>
-        <small>💡 Dica: arraste a imagem ou cole com CTRL+V</small>
       </div>
       <button class="btn-primary" onclick="criar()">Abrir Chamado 🚀</button>
     </div>
