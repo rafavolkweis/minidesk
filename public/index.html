@@ -2,16 +2,25 @@
 <html lang="pt-br">
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>MiniDesk</title><link rel="stylesheet" href="style.css">
+<title>MiniDesk</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-<header><div class="logo">🎫 MiniDesk</div><span>Sistema de chamados - Parte Final</span></header>
+<header><div class="logo">📦 MiniDesk</div><span>Sistema de chamados - Parte Final</span></header>
 <main>
 <div class="left">
   <div class="card"><h2>Novo Chamado</h2>
-  <input id="titulo" placeholder="Título - Ex: Impressora não funciona">
-  <textarea id="descricao" placeholder="Descreva em detalhes..."></textarea>
-  <button onclick="criar()">Abrir Chamado 🚀</button>
+    <input id="titulo" placeholder="Titulo - Ex: Impressora não funciona">
+    <textarea id="descricao" placeholder="Descreva em detalhes..."></textarea>
+    
+    <div style="margin-top:12px; border:1px dashed #333; border-radius:10px; padding:12px; background:#111">
+      <label style="font-size:13px; color:#aaa; display:block">📸 Anexar print / foto (opcional)</label>
+      <input type="file" id="fileInput" accept="image/*" style="margin-top:6px; width:100%; color:white">
+      <div id="preview"></div>
+      <small style="color:#666; display:block; margin-top:6px">Dica: pode arrastar ou colar com CTRL+V</small>
+    </div>
+
+    <button onclick="criar()" style="margin-top:12px">Abrir Chamado 🚀</button>
   </div>
 </div>
 <div class="right">
